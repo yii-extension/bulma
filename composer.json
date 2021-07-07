@@ -1,29 +1,35 @@
 {
-    "name": "yii-extension/template",
+    "name": "yii-extension/bulma",
     "type": "library",
-    "description": "_____",
+    "description": "Yii Extension Bulma.",
     "keywords": [
-        "_____"
+        "yii",
+        "extension",
+        "bulma"
     ],
     "license": "BSD-3-Clause",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.4|^8.0"
+        "php": "^7.4|^8.0",
+        "yii-extension/asset-bulma": "^1.0.0",
+        "yii-extension/simple-widget": "^1.0.0",
+        "yiisoft/html": "^1.0.0",
+        "yiisoft/var-dumper": "^1.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
-        "roave/infection-static-analysis-plugin": "^1.7",
-        "vimeo/psalm": "^4.3"
+        "roave/infection-static-analysis-plugin": "^1.8",
+        "vimeo/psalm": "^4.8"
     },
     "autoload": {
         "psr-4": {
-            "Template\\": "src"
+            "Yii\\Extension\\Bulma\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Template\\Tests\\": "tests"
+            "Yii\\Extension\\Bulma\\Tests\\": "tests"
         }
     },
     "extra": {
