@@ -16,20 +16,6 @@ abstract class Widget extends AbstractWidget implements NoEncodeStringableInterf
     private static int $counter = 0;
 
     /**
-     * The HTML attributes for the widgets. The following special options are recognized.
-     *
-     * @param array $value
-     *
-     * @return static
-     */
-    public function attributes(array $value): self
-    {
-        $new = clone $this;
-        $new->attributes = $value;
-        return $new;
-    }
-
-    /**
      * The prefix to the automatically generated widget IDs.
      *
      * @param string $value
@@ -78,6 +64,20 @@ abstract class Widget extends AbstractWidget implements NoEncodeStringableInterf
     {
         $new = clone $this;
         $new->autoGenerate = false;
+        return $new;
+    }
+
+    /**
+     * The HTML attributes for the widgets. The following special options are recognized.
+     *
+     * @param array $value
+     *
+     * @return static
+     */
+    protected function attributes(array $value): self
+    {
+        $new = clone $this;
+        $new->attributes = $value;
         return $new;
     }
 

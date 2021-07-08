@@ -24,20 +24,17 @@ use function implode;
 final class Dropdown extends Widget
 {
     private array $buttonAttributes = [];
-    private string $buttonIcon = 'fas fa-angle-down';
     private array $buttonIconAttributes = ['class' => 'icon is-small'];
+    private string $buttonIconCssClass = '';
+    private string $buttonIconText = '&#8595;';
     private string $buttonLabel = 'Clic Me';
     private array $buttonLabelAttributes = [];
+    private string $dividerCssClass = 'dropdown-divider';
     private string $dropdownContentCssClass = 'dropdown-content';
     private string $dropdownMenuCssClass = 'dropdown-menu';
     private string $dropdownTriggerCssClass = 'dropdown-trigger';
-    private string $dividerClass = 'dropdown-divider';
     private bool $encloseByContainer = true;
-    private string $itemsClass = 'dropdown-menu';
-    private string $itemClass = 'dropdown-item';
     private array $items = [];
-    private array $itemsAttributes = [];
-    private array $linkAttributes = ['aria-haspopup' => 'true', 'aria-expanded' => 'false'];
     private array $submenuAttributes = [];
     private array $triggerAttributes = [];
 
@@ -48,7 +45,7 @@ final class Dropdown extends Widget
     }
 
     /**
-     * The HTML attributes for the dropdown button widget. The following special options are recognized.
+     * The HTML attributes for the dropdown button. The following special options are recognized.
      *
      * @param array $value
      *
@@ -62,16 +59,30 @@ final class Dropdown extends Widget
     }
 
     /**
-     * Set icon for the dropdown button.
+     * Set icon css class for the dropdown button.
      *
      * @param string $value
      *
      * @return self
      */
-    public function buttonIcon(string $value): self
+    public function buttonIconCssClass(string $value): self
     {
         $new = clone $this;
-        $new->buttonIcon = $value;
+        $new->buttonIconCssClass = $value;
+        return $new;
+    }
+
+    /**
+     * Set icon text for the dropdown button.
+     *
+     * @param string $value
+     *
+     * @return self
+     */
+    public function buttonIconText(string $value): self
+    {
+        $new = clone $this;
+        $new->buttonIconText = $value;
         return $new;
     }
 
@@ -90,14 +101,66 @@ final class Dropdown extends Widget
     }
 
     /**
+     * The HTML attributes for the dropdown button label. The following special options are recognized.
+     *
+     * @param array $value
+     *
+     * @return static
+     */
+    public function buttonLabelAttributes(array $value): self
+    {
+        $new = clone $this;
+        $new->buttonLabelAttributes = $value;
+        return $new;
+    }
+
+    /**
+     * A horizontal line to separate dropdown items.
+     *
+     * @return static
+     */
+    public function dividerCssClass(string $value): self
+    {
+        $new = clone $this;
+        $new->dividerCssClass = $value;
+        return $new;
+    }
+
+    /**
+     * The dropdown box, with a white background and a shadow.
+     *
      * @return static
      *
      * @link https://bulma.io/documentation/components/dropdown/#dropdown-content
      */
-    public function dropdownCssContentClass(string $value): self
+    public function dropdownContentCssClass(string $value): self
     {
         $new = clone $this;
         $new->dropdownContentCssClass = $value;
+        return $new;
+    }
+
+    /**
+     * The toggable menu, hidden by default.
+     *
+     * @return static
+     */
+    public function dropdownMenuCssClass(string $value): self
+    {
+        $new = clone $this;
+        $new->dropdownMenuCssClass = $value;
+        return $new;
+    }
+
+    /**
+     * The toggable menu, hidden by default.
+     *
+     * @return static
+     */
+    public function dropdownTriggerCssClass(string $value): self
+    {
+        $new = clone $this;
+        $new->dropdownTriggerCssClass = $value;
         return $new;
     }
 
@@ -145,12 +208,22 @@ final class Dropdown extends Widget
     }
 
     /**
+     * If the widget should be unclosed by container.
+     *
+     * @return static
+     */
+    public function unClosedByContainer(): self
+    {
+        $new = clone $this;
+        $new->encloseByContainer = false;
+        return $new;
+    }
+
+    /**
      * @throws ReflectionException
      */
     private function renderDropdown(self $new): string
     {
-        Html::addCssClass($new->itemsAttributes, $new->itemsClass);
-
         /** @var string */
         $id = $new->attributes['id'] ?? "{$this->getId()}-dropdown";
 
@@ -185,7 +258,13 @@ final class Dropdown extends Widget
         return Button::tag()
             ->attributes($new->triggerAttributes)
             ->content(
-                $new->renderLabelButton($new->buttonLabel, $new->buttonIcon, $new->buttonIconAttributes)
+                $new->renderLabelButton(
+                    $new->buttonLabel,
+                    $new->buttonLabelAttributes,
+                    $new->buttonIconText,
+                    $new->buttonIconCssClass,
+                    $new->buttonIconAttributes,
+                )
             )
             ->encode(false)
             ->render() . PHP_EOL;
@@ -236,7 +315,7 @@ final class Dropdown extends Widget
         /** @var array|string $item */
         foreach ($new->items as $item) {
             if ($item === '-') {
-                $lines[] = CustomTag::name('hr')->class($new->dividerClass)->render();
+                $lines[] = CustomTag::name('hr')->class($new->dividerCssClass)->render();
             } else {
                 if (!isset($item['label']) && $item !== '-') {
                     throw new InvalidArgumentException('The "label" option is required.');
@@ -253,13 +332,13 @@ final class Dropdown extends Widget
                 $items = $item['items'] ?? [];
 
                 /** @var array */
-                $itemAttributes = $item['attributes'] ?? [];
-
-                /** @var array */
                 $urlAttributes = $item['urlAttributes'] ?? [];
 
                 /** @var string */
-                $icon = $item['icon'] ?? '';
+                $iconText = $item['iconText'] ?? '';
+
+                /** @var string */
+                $iconCssClass = $item['iconCssClass'] ?? '';
 
                 /** @var array */
                 $iconAttributes = $item['iconAttributes'] ?? [];
@@ -276,21 +355,19 @@ final class Dropdown extends Widget
                 /** @var bool */
                 $enclose = $item['enclose'] ?? true;
 
-                $itemLabel = $new->renderLabelItem($itemLabel, $icon, $iconAttributes);
+                $itemLabel = $new->renderLabelItem($itemLabel, $iconText, $iconCssClass, $iconAttributes);
 
                 Html::addCssClass($urlAttributes, 'dropdown-item');
 
                 if ($disabled) {
-                    $urlAttributes['tabindex'] = '-1';
-                    $urlAttributes['aria-disabled'] = 'true';
-                    Html::addCssClass($urlAttributes, 'disabled');
+                    Html::addCssStyle($urlAttributes, 'opacity:.65; pointer-events:none;');
                 } elseif ($active) {
                     Html::addCssClass($urlAttributes, 'is-active');
                 }
 
                 if ($items === []) {
                     if ($itemLabel === '-') {
-                        $content = Div::tag()->class('dropdown-divider')->render();
+                        $content = CustomTag::name('hr')->class($new->dividerCssClass)->render();
                     } elseif ($enclose === false) {
                         $content = $itemLabel;
                     } elseif ($url === '') {
@@ -314,29 +391,11 @@ final class Dropdown extends Widget
                     $submenuAttributes = $item['submenuAttributes'] ?? [];
                     $new->submenuAttributes = array_merge($new->submenuAttributes, $submenuAttributes);
 
-                    Html::addCssClass($new->submenuAttributes, 'dropdown-menu');
-                    Html::addCssClass($urlAttributes, 'dropdown-toggle');
-
-                    $dropdown = self::widget()
+                    $lines[] = self::widget()
                         ->attributes($new->submenuAttributes)
                         ->items($items)
                         ->submenuAttributes($new->submenuAttributes)
                         ->render();
-
-                    $id = "{$new->getId()}-dropdown";
-                    $urlAttributes['id'] = $id;
-                    $urlAttributes['aria-expanded'] = false;
-                    $urlAttributes['data-bs-toggle'] = 'dropdown';
-                    $urlAttributes['role'] = 'button';
-                    $new->attributes['aria-labelledby'] = $id;
-
-                    $attributes = array_merge($itemAttributes, $new->attributes);
-
-                    $lines[] = A::tag()->attributes($urlAttributes)->content($itemLabel)->url($url) . PHP_EOL .
-                        CustomTag::name('ul')
-                            ->attributes($attributes)
-                            ->content(PHP_EOL . $dropdown . PHP_EOL)
-                            ->encode(false);
                 }
             }
         }
@@ -344,19 +403,28 @@ final class Dropdown extends Widget
         return implode(PHP_EOL, $lines);
     }
 
-    private function renderLabelButton(string $label, string $icon, array $iconAttributes = []): string
-    {
+    private function renderLabelButton(
+        string $label,
+        array $labelAttributes,
+        string $iconText,
+        string $iconCssClass,
+        array $iconAttributes = []
+    ): string {
         $html = '';
 
         if ($label !== '') {
-            $html =  PHP_EOL . Span::tag()->content($label)->encode(false)->render();
+            $html =  PHP_EOL . Span::tag()
+                ->attributes($labelAttributes)
+                ->content($label)
+                ->encode(false)
+                ->render();
         }
 
-        if ($icon !== '') {
+        if ($iconText !== '' || $iconCssClass !== '') {
             $html .= PHP_EOL .
                 Span::tag()
                     ->attributes($iconAttributes)
-                    ->content(CustomTag::name('i')->class($icon)->render())
+                    ->content(CustomTag::name('i')->class($iconCssClass)->content($iconText)->encode(false)->render())
                     ->encode(false)
                     ->render();
         }
@@ -364,13 +432,18 @@ final class Dropdown extends Widget
         return $html . PHP_EOL;
     }
 
-    private function renderLabelItem(string $label, string $icon, array $iconAttributes = []): string {
+    private function renderLabelItem(
+        string $label,
+        string $iconText,
+        string $iconCssClass,
+        array $iconAttributes = []
+    ): string {
         $html = '';
 
-        if ($icon !== '') {
+        if ($iconText !== '' || $iconCssClass !== '') {
             $html = Span::tag()
                 ->attributes($iconAttributes)
-                ->content(CustomTag::name('i')->class($icon)->render())
+                ->content(CustomTag::name('i')->class($iconCssClass)->content($iconText)->encode(false)->render())
                 ->encode(false)
                 ->render();
         }
