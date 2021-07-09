@@ -30,6 +30,7 @@ final class Dropdown extends Widget
     private string $buttonLabel = 'Clic Me';
     private array $buttonLabelAttributes = [];
     private string $dividerCssClass = 'dropdown-divider';
+    private string $dropdownCssClass = 'dropdown';
     private string $dropdownContentCssClass = 'dropdown-content';
     private string $dropdownItemActiveCssClass = 'is-active';
     private string $dropdownItemCssClass = 'dropdown-item';
@@ -140,6 +141,13 @@ final class Dropdown extends Widget
     {
         $new = clone $this;
         $new->dividerCssClass = $value;
+        return $new;
+    }
+
+    public function dropdownCssClass(string $value): self
+    {
+        $new = clone $this;
+        $new->dropdownCssClass = $value;
         return $new;
     }
 
@@ -275,7 +283,7 @@ final class Dropdown extends Widget
         unset($new->attributes['id']);
 
         if ($new->encloseByContainer) {
-            Html::addCssClass($new->attributes, 'dropdown');
+            Html::addCssClass($new->attributes, $new->dropdownCssClass);
             $html = Div::tag()->attributes($new->attributes)->content(
                 PHP_EOL . $new->renderDropdownTrigger($new, $id) . PHP_EOL
             )->encode(false)->render();
