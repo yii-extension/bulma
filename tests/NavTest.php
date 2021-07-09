@@ -53,6 +53,6 @@ final class NavTest extends TestCase
 
     public function testRenderItemsEmpty(): void
     {
-        $this->assertEmpty('', Nav::widget()->items([])->render());
+        $this->assertEmpty(Nav::widget()->items([])->render());
     }
 }
