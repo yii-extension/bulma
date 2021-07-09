@@ -31,12 +31,15 @@ final class Dropdown extends Widget
     private array $buttonLabelAttributes = [];
     private string $dividerCssClass = 'dropdown-divider';
     private string $dropdownContentCssClass = 'dropdown-content';
+    private string $dropdownItemActiveCssClass = 'is-active';
+    private string $dropdownItemCssClass = 'dropdown-item';
+    private string $dropdownItemDisabledStyleCss = 'opacity:.65;pointer-events:none;';
+    private string $dropdownItemHeaderCssClass = 'dropdown-header';
     private string $dropdownMenuCssClass = 'dropdown-menu';
     private string $dropdownTriggerCssClass = 'dropdown-trigger';
     private bool $encloseByContainer = true;
     private array $items = [];
     private array $submenuAttributes = [];
-    private array $triggerAttributes = [];
 
     protected function run(): string
     {
@@ -55,6 +58,20 @@ final class Dropdown extends Widget
     {
         $new = clone $this;
         $new->buttonAttributes = $value;
+        return $new;
+    }
+
+    /**
+     * The HTML attributes for the dropdown icon button. The following special options are recognized.
+     *
+     * @param array $value
+     *
+     * @return static
+     */
+    public function buttonIconAttributes(array $value): self
+    {
+        $new = clone $this;
+        $new->buttonIconAttributes = $value;
         return $new;
     }
 
@@ -137,6 +154,34 @@ final class Dropdown extends Widget
     {
         $new = clone $this;
         $new->dropdownContentCssClass = $value;
+        return $new;
+    }
+
+    public function dropdownItemActiveCssClass(string $value): self
+    {
+        $new = clone $this;
+        $new->dropdownItemActiveCssClass = $value;
+        return $new;
+    }
+
+    public function dropdownItemCssClass(string $value): self
+    {
+        $new = clone $this;
+        $new->dropdownItemCssClass = $value;
+        return $new;
+    }
+
+    public function dropdownItemDisabledStyleCss(string $value): self
+    {
+        $new = clone $this;
+        $new->dropdownItemDisabledStyleCss = $value;
+        return $new;
+    }
+
+    public function dropdownItemHeaderCssClass(string $value): self
+    {
+        $new = clone $this;
+        $new->dropdownItemHeaderCssClass = $value;
         return $new;
     }
 
@@ -250,13 +295,13 @@ final class Dropdown extends Widget
      */
     private function renderDropdownButton(self $new, string $id): string
     {
-        Html::addCssClass($new->triggerAttributes, 'button');
+        Html::addCssClass($new->buttonAttributes, 'button');
 
-        $new->triggerAttributes['aria-haspopup'] = "true";
-        $new->triggerAttributes['aria-controls'] = $id;
+        $new->buttonAttributes['aria-haspopup'] = "true";
+        $new->buttonAttributes['aria-controls'] = $id;
 
         return Button::tag()
-            ->attributes($new->triggerAttributes)
+            ->attributes($new->buttonAttributes)
             ->content(
                 $new->renderLabelButton(
                     $new->buttonLabel,
@@ -357,12 +402,12 @@ final class Dropdown extends Widget
 
                 $itemLabel = $new->renderLabelItem($itemLabel, $iconText, $iconCssClass, $iconAttributes);
 
-                Html::addCssClass($urlAttributes, 'dropdown-item');
+                Html::addCssClass($urlAttributes, $new->dropdownItemCssClass);
 
                 if ($disabled) {
-                    Html::addCssStyle($urlAttributes, 'opacity:.65; pointer-events:none;');
+                    Html::addCssStyle($urlAttributes, $new->dropdownItemDisabledStyleCss);
                 } elseif ($active) {
-                    Html::addCssClass($urlAttributes, 'is-active');
+                    Html::addCssClass($urlAttributes, $new->dropdownItemActiveCssClass);
                 }
 
                 if ($items === []) {
@@ -372,7 +417,7 @@ final class Dropdown extends Widget
                         $content = $itemLabel;
                     } elseif ($url === '') {
                         $content = CustomTag::name('h6')
-                            ->class('dropdown-header')
+                            ->class($new->dropdownItemHeaderCssClass)
                             ->content($itemLabel)
                             ->encode(null)
                             ->render();
