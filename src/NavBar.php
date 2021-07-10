@@ -222,16 +222,17 @@ final class NavBar extends Widget
 
     private function renderNavBar(self $new): string
     {
-        Html::addCssClass($new->attributes, $new->navBarCssClass);
+        $attributes = $new->getAttributes();
+        Html::addCssClass($attributes, $new->navBarCssClass);
 
-        if (!isset($new->attributes['id'])) {
-            $new->attributes['id'] = "{$new->getId()}-navbar";
+        if (!isset($attributes['id'])) {
+            $attributes['id'] = "{$new->getId()}-navbar";
         }
 
-        $new->attributes['aria-label'] = $new->navBarAriaLabel;
-        $new->attributes['role'] = $new->navBarRole;
+        $attributes['aria-label'] = $new->navBarAriaLabel;
+        $attributes['role'] = $new->navBarRole;
 
-        return Html::openTag('nav', $new->attributes) . PHP_EOL . $new->renderNavBarBrand() . PHP_EOL;
+        return Html::openTag('nav', $attributes) . PHP_EOL . $new->renderNavBarBrand() . PHP_EOL;
     }
 
     private function renderNavBarBrand(): string

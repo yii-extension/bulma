@@ -290,8 +290,9 @@ final class Nav extends Widget
         }
 
         if ($items !== []) {
+            $attributes = $new->getattributes();
             Html::addCssClass(
-                $new->attributes,
+                $attributes,
                 [$new->navBarItemCssClass, $new->hasDropdownCssClass, $new->isHoverableCssClass]
             );
             Html::addCssClass($urlAttributes, $new->navBarLinkCssClass);
@@ -303,7 +304,7 @@ final class Nav extends Widget
             $div = Div::tag()->attributes($dropdownAttributes)->content($dropdown)->encode(false)->render();
 
             $html = Div::tag()
-                ->attributes($new->attributes)
+                ->attributes($attributes)
                 ->content(PHP_EOL . $a . PHP_EOL . $div . PHP_EOL)
                 ->encode(false)
                 ->render();

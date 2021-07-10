@@ -9,11 +9,25 @@ use Yiisoft\Html\NoEncodeStringableInterface;
 
 abstract class Widget extends AbstractWidget implements NoEncodeStringableInterface
 {
-    protected array $attributes = [];
+    private array $attributes = [];
     private string $id = '';
     private string $autoIdPrefix = 'w';
     private bool $autoGenerate = true;
     private static int $counter = 0;
+
+    /**
+     * The HTML attributes for the widgets. The following special options are recognized.
+     *
+     * @param array $value
+     *
+     * @return static
+     */
+    public function attributes(array $value): self
+    {
+        $new = clone $this;
+        $new->attributes = $value;
+        return $new;
+    }
 
     /**
      * The prefix to the automatically generated widget IDs.
@@ -67,18 +81,9 @@ abstract class Widget extends AbstractWidget implements NoEncodeStringableInterf
         return $new;
     }
 
-    /**
-     * The HTML attributes for the widgets. The following special options are recognized.
-     *
-     * @param array $value
-     *
-     * @return static
-     */
-    protected function attributes(array $value): self
+    protected function getAttributes(): array
     {
-        $new = clone $this;
-        $new->attributes = $value;
-        return $new;
+        return $this->attributes;
     }
 
     /**

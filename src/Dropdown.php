@@ -294,16 +294,20 @@ final class Dropdown extends Widget
      */
     private function renderDropdown(self $new): string
     {
-        /** @var string */
-        $id = $new->attributes['id'] ?? "{$this->getId()}-dropdown";
+        $attributes = $new->getAttributes();
 
-        unset($new->attributes['id']);
+        /** @var string */
+        $id = $attributes['id'] ?? "{$this->getId()}-dropdown";
+
+        unset($attributes['id']);
 
         if ($new->encloseByContainer) {
-            Html::addCssClass($new->attributes, $new->dropdownCssClass);
-            $html = Div::tag()->attributes($new->attributes)->content(
-                PHP_EOL . $new->renderDropdownTrigger($new, $id) . PHP_EOL
-            )->encode(false)->render();
+            Html::addCssClass($attributes, $new->dropdownCssClass);
+            $html = Div::tag()
+                ->attributes($attributes)
+                ->content(PHP_EOL . $new->renderDropdownTrigger($new, $id) . PHP_EOL)
+                ->encode(false)
+                ->render();
         } else {
             $html = $new->renderItems($new);
         }
