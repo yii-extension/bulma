@@ -397,8 +397,8 @@ final class DropdownTest extends TestCase
                 ['label' => 'Dropdown item', 'url' => '#'],
                 ['label' => 'Other dropdown item', 'url' => '#'],
                 ['label' => 'Active dropdown item', 'url' => '#', 'active' => true],
-                ['label' => 'Other dropdown item', 'url' => '#'],
-                '-',
+                ['label' => 'Other dropdown item', 'url' => '#', 'enclose' => false],
+                ['label' => '-'],
                 ['label' => 'With a divider', 'url' => '#'],
             ])
             ->render();
@@ -415,7 +415,7 @@ final class DropdownTest extends TestCase
         <a class="dropdown-item" href="#">Dropdown item</a>
         <a class="dropdown-item" href="#">Other dropdown item</a>
         <a class="dropdown-item is-active" href="#">Active dropdown item</a>
-        <a class="dropdown-item" href="#">Other dropdown item</a>
+        Other dropdown item
         <hr class="dropdown-divider">
         <a class="dropdown-item" href="#">With a divider</a>
         </div>
@@ -502,11 +502,9 @@ final class DropdownTest extends TestCase
                 [
                     'label' => 'Dropdown',
                     'items' => [
-                        ['label' => 'Options:'],
-                        ['label' => '-'],
                         ['label' => 'Option 2', 'url' => "/page2"],
-                        ['label' => '<hr class="dropdown-divider">', 'enclose' => false]
                     ],
+                    'submenu' => true,
                 ],
             ])
             ->render();
@@ -523,17 +521,14 @@ final class DropdownTest extends TestCase
         <a class="dropdown-item" href="#" style="opacity:.65;pointer-events:none;">Disable</a>
         <div class="dropdown">
         <div class="dropdown-trigger">
-        <button class="button" aria-haspopup="true" aria-controls="w1-dropdown">
+        <a class="dropdown-item">
         <span>Clic Me</span>
         <span class="icon is-small"><i class="">&#8595;</i></span>
-        </button>
+        </a>
         </div>
         <div id="w1-dropdown" class="dropdown-menu">
         <div class="dropdown-content">
-        <h6 class="dropdown-header">Options:</h6>
-        <hr class="dropdown-divider">
         <a class="dropdown-item" href="/page2">Option 2</a>
-        <hr class="dropdown-divider">
         </div>
         </div>
         </div>

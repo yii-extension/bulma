@@ -27,8 +27,9 @@ final class Nav extends Widget
     private bool $activateParents = false;
     private string $currentPath = '';
     private array $items = [];
-    private string $navBarDropdownCssClass = 'has-dropdown';
-    private string $navBarHoverableCssClass = 'is-hoverable';
+    private string $hasDropdownCssClass = 'has-dropdown';
+    private string $isHoverableCssClass = 'is-hoverable';
+    private string $navBarDropdownCssClass = 'navbar-dropdown';
     private string $navBarItemCssClass = 'navbar-item';
     private string $navBarLinkCssClass = 'navbar-link';
 
@@ -92,7 +93,7 @@ final class Nav extends Widget
      * - linkOptions: array, optional, the HTML attributes of the item's link.
      * - options: array, optional, the HTML attributes of the item container (LI).
      * - active: bool, optional, whether the item should be on active state or not.
-     * - dropdownOptions: array, optional, the HTML options that will passed to the {@see Dropdown} widget.
+     * - dropdownAttributes: array, optional, the HTML options that will passed to the {@see Dropdown} widget.
      * - items: array|string, optional, the configuration array for creating a {@see Dropdown} widget, or a string
      *   representing the dropdown menu.
      * - encode: bool, optional, whether the label will be HTML-encoded. If set, supersedes the $encodeLabels option for
@@ -126,17 +127,13 @@ final class Nav extends Widget
      *
      * @link https://bulma.io/documentation/components/navbar/#dropdown-menu
      */
-    private function renderDropdown(array $items, array $parentItem): string
+    private function renderDropdown(array $items): string
     {
-        /** @var array */
-        $dropdownAttributes = isset($parentItem['dropdownAttributes']) ? $parentItem['dropdownAttributes'] : [];
-
         return Dropdown::widget()
             ->dividerCssClass('navbar-divider')
             ->dropdownCssClass('navbar-dropdown')
             ->dropdownItemCssClass('navbar-item')
             ->items($items)
-            ->submenuAttributes($dropdownAttributes)
             ->unClosedByContainer()
             ->render() . PHP_EOL;
     }
@@ -264,6 +261,9 @@ final class Nav extends Widget
         /** @var array */
         $urlAttributes = $item['urlAttributes'] ?? [];
 
+        /** @var array */
+        $dropdownAttributes = isset($item['dropdownAttributes']) ? $item['dropdownAttributes'] : [];
+
         /** @var string */
         $iconText = $item['iconText'] ?? '';
 
@@ -281,8 +281,6 @@ final class Nav extends Widget
 
         $itemLabel = $new->renderLabelItem($itemLabel, $iconText, $iconCssClass, $iconAttributes);
 
-        Html::addCssClass($urlAttributes, 'navbar-item');
-
         if ($disabled) {
             Html::addCssStyle($urlAttributes, 'opacity:.65; pointer-events:none;');
         }
@@ -294,14 +292,15 @@ final class Nav extends Widget
         if ($items !== []) {
             Html::addCssClass(
                 $new->attributes,
-                [$new->navBarItemCssClass, $new->navBarDropdownCssClass, $new->navBarHoverableCssClass]
+                [$new->navBarItemCssClass, $new->hasDropdownCssClass, $new->isHoverableCssClass]
             );
             Html::addCssClass($urlAttributes, $new->navBarLinkCssClass);
+            Html::addCssClass($dropdownAttributes, $new->navBarDropdownCssClass);
 
             $items = $new->isChildActive($items, $active);
-            $dropdown = PHP_EOL . $new->renderDropdown($items, $item);
+            $dropdown = PHP_EOL . $new->renderDropdown($items);
             $a = A::tag()->attributes($urlAttributes)->content($itemLabel)->encode(false)->url($url)->render();
-            $div = Div::tag()->attributes(['class' => 'navbar-dropdown'])->content($dropdown)->encode(false)->render();
+            $div = Div::tag()->attributes($dropdownAttributes)->content($dropdown)->encode(false)->render();
 
             $html = Div::tag()
                 ->attributes($new->attributes)
@@ -311,6 +310,7 @@ final class Nav extends Widget
         }
 
         if ($html === '') {
+            Html::addCssClass($urlAttributes, 'navbar-item');
             $html = A::tag()->attributes($urlAttributes)->content($itemLabel)->url($url)->encode(false)->render();
         }
 

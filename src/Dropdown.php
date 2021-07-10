@@ -40,6 +40,7 @@ final class Dropdown extends Widget
     private string $dropdownTriggerCssClass = 'dropdown-trigger';
     private bool $encloseByContainer = true;
     private array $items = [];
+    private bool $submenu = false;
     private array $submenuAttributes = [];
 
     protected function run(): string
@@ -247,6 +248,20 @@ final class Dropdown extends Widget
     }
 
     /**
+     * Set if it is a submenu or subdropdown,
+     *
+     * @param array $value
+     *
+     * @return static
+     */
+    public function submenu(bool $value): self
+    {
+        $new = clone $this;
+        $new->submenu = $value;
+        return $new;
+    }
+
+    /**
      * The HTML attributes for sub-menu container tags.
      *
      * @param array $value
@@ -263,12 +278,14 @@ final class Dropdown extends Widget
     /**
      * If the widget should be unclosed by container.
      *
+     * @param bool $value
+     *
      * @return static
      */
-    public function unClosedByContainer(): self
+    public function unClosedByContainer(bool $value = false): self
     {
         $new = clone $this;
-        $new->encloseByContainer = false;
+        $new->encloseByContainer = $value;
         return $new;
     }
 
@@ -323,6 +340,23 @@ final class Dropdown extends Widget
             ->render() . PHP_EOL;
     }
 
+    public function renderDropdownButtonLink(self $new, string $id): string
+    {
+        return A::tag()
+            ->class($new->dropdownItemCssClass)
+            ->content(
+                $new->renderLabelButton(
+                    $new->buttonLabel,
+                    $new->buttonLabelAttributes,
+                    $new->buttonIconText,
+                    $new->buttonIconCssClass,
+                    $new->buttonIconAttributes,
+                )
+            )
+            ->encode(false)
+            ->render() . PHP_EOL;
+    }
+
     /**
      * @throws ReflectionException
      */
@@ -347,9 +381,15 @@ final class Dropdown extends Widget
 
     private function renderDropdownTrigger(self $new, string $id): string
     {
+        if ($new->submenu !== true) {
+            $button = $new->renderDropdownButton($new, $id);
+        } else {
+            $button = $new->renderDropdownButtonLink($new, $id);
+        }
+
         return Div::tag()
             ->class($new->dropdownTriggerCssClass)
-            ->content(PHP_EOL . $new->renderDropdownButton($new, $id))
+            ->content(PHP_EOL . $button)
             ->encode(false)
             ->render() . PHP_EOL . $new->renderDropdownMenu($new, $id);
     }
@@ -408,6 +448,9 @@ final class Dropdown extends Widget
                 /** @var bool */
                 $enclose = $item['enclose'] ?? true;
 
+                /** @var bool */
+                $submenu = $item['submenu'] ?? false;
+
                 $itemLabel = $new->renderLabelItem($itemLabel, $iconText, $iconCssClass, $iconAttributes);
 
                 Html::addCssClass($urlAttributes, $new->dropdownItemCssClass);
@@ -444,9 +487,14 @@ final class Dropdown extends Widget
                     $submenuAttributes = $item['submenuAttributes'] ?? [];
                     $new->submenuAttributes = array_merge($new->submenuAttributes, $submenuAttributes);
 
-                    $lines[] = self::widget()
+                    $dropdown = Dropdown::widget();
+
+                    $lines[] = $dropdown
                         ->attributes($new->submenuAttributes)
+                        ->dividerCssClass($new->dividerCssClass)
+                        ->dropdownItemCssClass($new->dropdownItemCssClass)
                         ->items($items)
+                        ->submenu($submenu)
                         ->submenuAttributes($new->submenuAttributes)
                         ->render();
                 }
