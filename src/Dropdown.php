@@ -250,7 +250,7 @@ final class Dropdown extends Widget
     /**
      * Set if it is a submenu or subdropdown,
      *
-     * @param array $value
+     * @param bool $value
      *
      * @return static
      */
