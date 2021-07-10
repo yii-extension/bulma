@@ -12,6 +12,7 @@
     },
     "mutators": {
         "@default": true,
-        "CloneRemoval": false
+        "CloneRemoval": false,
+        "PublicVisibility": false
     }
 }

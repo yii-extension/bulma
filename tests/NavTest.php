@@ -36,6 +36,7 @@ final class NavTest extends TestCase
             ])
             ->render();
         $expected = <<<'HTML'
+        <div class="navbar-menu">
         <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link" href="#">Dropdown</a>
         <div class="navbar-dropdown">
@@ -50,6 +51,75 @@ final class NavTest extends TestCase
         <div class="dropdown-content">
         <a class="navbar-item is-active" href="#">Page</a>
         </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        HTML;
+        $this->assertEqualsWithoutLE($expected, $html);
+    }
+
+    public function testEnclosedByEndMenu(): void
+    {
+        $html = Nav::widget()
+            ->enclosedByEndMenu()
+            ->items([
+                [
+                    'label' => 'Docs',
+                    'items' => [
+                        ['label' => 'Overview', 'url' => '#'],
+                        ['label' => 'Elements', 'url' => '#'],
+                        '-',
+                        ['label' => 'Components', 'url' => '#'],
+                    ],
+                ],
+            ])
+            ->render();
+        $expected = <<<'HTML'
+        <div class="navbar-menu">
+        <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="#">Docs</a>
+        <div class="navbar-dropdown">
+        <a class="navbar-item" href="#">Overview</a>
+        <a class="navbar-item" href="#">Elements</a>
+        <hr class="navbar-divider">
+        <a class="navbar-item" href="#">Components</a>
+        </div>
+        </div>
+        </div>
+        </div>
+        HTML;
+        $this->assertEqualsWithoutLE($expected, $html);
+    }
+
+    public function testEnclosedByStartMenu(): void
+    {
+        $html = Nav::widget()
+            ->enclosedByStartMenu()
+            ->items([
+                [
+                    'label' => 'Docs',
+                    'items' => [
+                        ['label' => 'Overview', 'url' => '#'],
+                        ['label' => 'Elements', 'url' => '#'],
+                        '-',
+                        ['label' => 'Components', 'url' => '#'],
+                    ],
+                ],
+            ])
+            ->render();
+        $expected = <<<'HTML'
+        <div class="navbar-menu">
+        <div class="navbar-start">
+        <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="#">Docs</a>
+        <div class="navbar-dropdown">
+        <a class="navbar-item" href="#">Overview</a>
+        <a class="navbar-item" href="#">Elements</a>
+        <hr class="navbar-divider">
+        <a class="navbar-item" href="#">Components</a>
         </div>
         </div>
         </div>
@@ -74,6 +144,7 @@ final class NavTest extends TestCase
             ])
             ->render();
         $expected = <<<'HTML'
+        <div class="navbar-menu">
         <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link" href="#">Docs</a>
         <div class="navbar-dropdown">
@@ -81,6 +152,7 @@ final class NavTest extends TestCase
         <a class="navbar-item" href="#">Elements</a>
         <hr class="navbar-divider">
         <a class="navbar-item" href="#">Components</a>
+        </div>
         </div>
         </div>
         HTML;
@@ -115,6 +187,7 @@ final class NavTest extends TestCase
             ])
             ->render();
         $expected = <<<'HTML'
+        <div class="navbar-menu">
         <a class="navbar-item" href="#">Page1</a>
         <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link" href="#">Dropdown1</a>
@@ -123,14 +196,20 @@ final class NavTest extends TestCase
         <a class="navbar-item" href="#">Page3</a>
         </div>
         </div>
+        </div>
         HTML;
         $this->assertEqualsWithoutLE($expected, $html);
     }
 
     public function testEncodeLabels(): void
     {
-        $this->assertSame(
-            '<a class="navbar-item" href="#">a &amp; b</a>',
+        $expected = <<<'HTML'
+        <div class="navbar-menu">
+        <a class="navbar-item" href="#">a &amp; b</a>
+        </div>
+        HTML;
+        $this->assertEqualsWithoutLE(
+            $expected,
             Nav::widget()->items([['label' => 'a & b', 'encode' => true]])->render(),
         );
     }
@@ -142,8 +221,10 @@ final class NavTest extends TestCase
             ->items([['label' => 'Item1', 'active' => true], ['label' => 'Item2', 'url' => '/site/index']])
             ->render();
         $expected = <<<'HTML'
+        <div class="navbar-menu">
         <a class="navbar-item" href="#">Item1</a>
         <a class="navbar-item" href="/site/index">Item2</a>
+        </div>
         HTML;
         $this->assertEqualsWithoutLE($expected, $html);
     }
@@ -167,12 +248,14 @@ final class NavTest extends TestCase
             ->withoutActivateItems()
             ->render();
         $expected = <<<'HTML'
+        <div class="navbar-menu">
         <a class="navbar-item" href="#">Item1</a>
         <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link" href="#">Item2</a>
         <div class="navbar-dropdown">
         <a class="navbar-item" href="site/index">Page2</a>
         <a class="navbar-item is-active" href="#">Page3</a>
+        </div>
         </div>
         </div>
         HTML;
@@ -209,12 +292,14 @@ final class NavTest extends TestCase
             ])
             ->render();
         $expected = <<<'HTML'
+        <div class="navbar-menu">
         <a class="navbar-item" href="/setting/account"><span class="icon"><i class="fas fa-user-cog"></i></span>Setting Account</a>
         <a class="navbar-item" href="/profile"><span class="icon"><i class="fas fa-users"></i></span>Profile</a>
         <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link" href="#">Admin<img class="img-rounded" src="../../docs/images/icon-avatar.png" aria-expanded="false"></a>
         <div class="navbar-dropdown">
         <a class="navbar-item" href="/auth/logout">Logout</a>
+        </div>
         </div>
         </div>
         HTML;
@@ -228,8 +313,10 @@ final class NavTest extends TestCase
             ->items([['label' => 'Item1', 'active' => true], ['label' => 'Item2', 'url' => '/site/index']])
             ->render();
         $expected = <<<'HTML'
+        <div class="navbar-menu">
         <a class="is-active navbar-item" href="#">Item1</a>
         <a class="is-active navbar-item" href="/site/index">Item2</a>
+        </div>
         HTML;
         $this->assertEqualsWithoutLE($expected, $html);
     }
@@ -251,12 +338,14 @@ final class NavTest extends TestCase
             ])
             ->render();
         $expected = <<<'HTML'
+        <div class="navbar-menu">
         <a class="navbar-item" href="#">Item1</a>
         <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link" href="#">Item2</a>
         <div class="navbar-dropdown">
         <a class="navbar-item" href="/site/page2">Page2</a>
         <a class="navbar-item is-active" href="/site/page3">Page3</a>
+        </div>
         </div>
         </div>
         HTML;
@@ -272,16 +361,26 @@ final class NavTest extends TestCase
 
     public function testRender(): void
     {
-        $this->assertSame(
-            '<a class="navbar-item" href="#">Page1</a>',
+        $expected = <<<'HTML'
+        <div class="navbar-menu">
+        <a class="navbar-item" href="#">Page1</a>
+        </div>
+        HTML;
+        $this->assertEqualsWithoutLE(
+            $expected,
             Nav::widget()->items([['label' => 'Page1', 'url' => '#']])->render(),
         );
     }
 
     public function testRenderItemsDisabled(): void
     {
-        $this->assertSame(
-            '<a class="navbar-item" href="#" style="opacity:.65; pointer-events:none;">a & b</a>',
+        $expected = <<<'HTML'
+        <div class="navbar-menu">
+        <a class="navbar-item" href="#" style="opacity:.65; pointer-events:none;">a & b</a>
+        </div>
+        HTML;
+        $this->assertEqualsWithoutLE(
+            $expected,
             Nav::widget()->items([['label' => 'a & b', 'disabled' => true]])->render(),
         );
     }
@@ -292,8 +391,10 @@ final class NavTest extends TestCase
             ->items([['label' => 'Page1', 'items' => null], ['label' => 'Page4', 'items' => []]])
             ->render();
         $expected = <<<'HTML'
+        <div class="navbar-menu">
         <a class="navbar-item" href="#">Page1</a>
         <a class="navbar-item" href="#">Page4</a>
+        </div>
         HTML;
         $this->assertEqualsWithoutLE($expected, $html);
         $this->assertEmpty(Nav::widget()->items([])->render());
@@ -301,9 +402,11 @@ final class NavTest extends TestCase
 
     public function testRenderItemsWithoutUrl(): void
     {
-        $this->assertEqualsWithoutLE(
-            '<a class="navbar-item" href="#">Page1</a>',
-            Nav::widget()->items([['label' => 'Page1']])->render()
-        );
+        $expected = <<<'HTML'
+        <div class="navbar-menu">
+        <a class="navbar-item" href="#">Page1</a>
+        </div>
+        HTML;
+        $this->assertEqualsWithoutLE($expected, Nav::widget()->items([['label' => 'Page1']])->render());
     }
 }

@@ -26,12 +26,17 @@ final class Nav extends Widget
     private bool $activateItems = true;
     private bool $activateParents = false;
     private string $currentPath = '';
+    private bool $enclosedByStartMenu = false;
+    private bool $enclosedByEndMenu = false;
     private array $items = [];
     private string $hasDropdownCssClass = 'has-dropdown';
     private string $isHoverableCssClass = 'is-hoverable';
     private string $navBarDropdownCssClass = 'navbar-dropdown';
+    private string $navBarEndCssClass = 'navbar-end';
     private string $navBarItemCssClass = 'navbar-item';
     private string $navBarLinkCssClass = 'navbar-link';
+    private string $navBarMenuCssClass = 'navbar-menu';
+    private string $navBarStartCssClass = 'navbar-start';
 
     /**
      * @throws ReflectionException
@@ -80,6 +85,30 @@ final class Nav extends Widget
     {
         $new = clone $this;
         $new->currentPath = $value;
+        return $new;
+    }
+
+    /**
+     * @return static
+     *
+     * @link https://bulma.io/documentation/components/navbar/#navbar-start-and-navbar-end
+     */
+    public function enclosedByEndMenu(): self
+    {
+        $new = clone $this;
+        $new->enclosedByEndMenu = true;
+        return $new;
+    }
+
+        /**
+     * @return static
+     *
+     * @link https://bulma.io/documentation/components/navbar/#navbar-start-and-navbar-end
+     */
+    public function enclosedByStartMenu(): self
+    {
+        $new = clone $this;
+        $new->enclosedByStartMenu = true;
         return $new;
     }
 
@@ -334,6 +363,24 @@ final class Nav extends Widget
             }
         }
 
-        return implode("\n", $items);
+        $links = PHP_EOL . implode("\n", $items) . PHP_EOL;
+
+        if ($new->enclosedByStartMenu) {
+            $links = PHP_EOL . Div::tag()->class($new->navBarStartCssClass)->content($links)->encode(false)->render() .
+                PHP_EOL;
+        }
+
+        if ($new->enclosedByEndMenu) {
+            $links = PHP_EOL . Div::tag()->class($new->navBarEndCssClass)->content($links)->encode(false)->render() .
+                PHP_EOL;
+        }
+
+        return $new->items !== []
+             ? Div::tag()
+                ->class($new->navBarMenuCssClass)
+                ->content($links)
+                ->encode(false)
+                ->render()
+             : '';
     }
 }
