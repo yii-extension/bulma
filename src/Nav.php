@@ -6,7 +6,6 @@ namespace Yii\Extension\Bulma;
 
 use InvalidArgumentException;
 use ReflectionException;
-use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\A;
 use Yiisoft\Html\Tag\CustomTag;
@@ -147,8 +146,6 @@ final class Nav extends Widget
      * This method is called to create sub-menus.
      *
      * @param array $items the given items. Please refer to {@see Dropdown::items} for the array structure.
-     * @param array $parentItem the parent item information. Please refer to {@see items} for the structure of this
-     * array.
      *
      * @throws ReflectionException
      *
@@ -291,7 +288,7 @@ final class Nav extends Widget
         $urlAttributes = $item['urlAttributes'] ?? [];
 
         /** @var array */
-        $dropdownAttributes = isset($item['dropdownAttributes']) ? $item['dropdownAttributes'] : [];
+        $dropdownAttributes = $item['dropdownAttributes'] ?? [];
 
         /** @var string */
         $iconText = $item['iconText'] ?? '';

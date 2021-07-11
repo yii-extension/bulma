@@ -275,7 +275,7 @@ final class NavBar extends Widget
             }
         }
 
-        $brand .= $new->renderNavBarBurguer($new);
+        $brand .= $new->renderNavBarBurger($new);
 
         return Div::tag()
             ->attributes($new->brandAttributes)
@@ -288,11 +288,11 @@ final class NavBar extends Widget
     /**
      * Renders collapsible toggle button.
      *
-     * @return string the rendering navbar burguer link button.
+     * @return string the rendering navbar burger link button.
      *
      * @link https://bulma.io/documentation/components/navbar/#navbar-burger
      */
-    private function renderNavBarBurguer(self $new): string
+    private function renderNavBarBurger(self $new): string
     {
         if ($new->buttonLinkContent === '') {
             $new->buttonLinkContent = PHP_EOL .

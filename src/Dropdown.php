@@ -43,6 +43,9 @@ final class Dropdown extends Widget
     private bool $submenu = false;
     private array $submenuAttributes = [];
 
+    /**
+     * @throws ReflectionException
+     */
     protected function run(): string
     {
         $new = clone $this;
@@ -344,7 +347,7 @@ final class Dropdown extends Widget
             ->render() . PHP_EOL;
     }
 
-    public function renderDropdownButtonLink(self $new, string $id): string
+    public function renderDropdownButtonLink(self $new): string
     {
         return A::tag()
             ->class($new->dropdownItemCssClass)
@@ -373,6 +376,9 @@ final class Dropdown extends Widget
             ->render();
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function renderDropdownMenu(self $new, string $id): string
     {
         return Div::tag()
@@ -383,12 +389,15 @@ final class Dropdown extends Widget
             ->render();
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function renderDropdownTrigger(self $new, string $id): string
     {
         if ($new->submenu !== true) {
             $button = $new->renderDropdownButton($new, $id);
         } else {
-            $button = $new->renderDropdownButtonLink($new, $id);
+            $button = $new->renderDropdownButtonLink($new);
         }
 
         return Div::tag()
